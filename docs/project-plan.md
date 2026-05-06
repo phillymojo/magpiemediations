@@ -1,3 +1,12 @@
+<!--
+  Source of truth for the project plan shared with partners.
+
+  The PDF at docs/project-plan.pdf is rendered from docs/project-plan.html,
+  which mirrors this markdown with PDF-specific styling. When updating the
+  plan, edit this file first, mirror the changes in project-plan.html,
+  then run scripts/render-project-plan.sh to regenerate the PDF.
+-->
+
 # Magpie Mediations — Project Plan
 
 **Version 1.0**  •  Last updated 2026-05-05

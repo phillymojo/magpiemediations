@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--
+  Render template for docs/project-plan.pdf.
+
+  The markdown at docs/project-plan.md is the human-readable source of
+  truth. This HTML mirrors that content with the styling needed for the
+  PDF render (status pills, branded headings, single-page layout).
+
+  When updating the project plan:
+    1. Edit docs/project-plan.md (the source of truth).
+    2. Mirror the same changes here.
+    3. Run scripts/render-project-plan.sh to regenerate the PDF.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Magpie Mediations — Project Plan</title>
+<style>
+  @page { size: letter; margin: 0.4in 0.7in 0.35in 0.7in; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1E2A3A;
+    line-height: 1.38;
+    font-size: 10pt;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  h1 {
+    color: #12284C;
+    font-size: 18pt;
+    margin: 0 0 1pt 0;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  h2 {
+    color: #12284C;
+    font-size: 11.5pt;
+    margin: 9pt 0 3pt 0;
+    font-weight: 700;
+    border-bottom: 1.25px solid #D0DAE8;
+    padding-bottom: 1.5pt;
+  }
+  .meta { color: #607080; font-size: 8.5pt; margin-bottom: 4pt; }
+  .meta strong { color: #1E2A3A; }
+  hr { border: none; border-top: 1px solid #D0DAE8; margin: 4pt 0; }
+  p { margin: 3pt 0; }
+  ul { margin: 3pt 0; padding-left: 16pt; }
+  li { margin: 1pt 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 3pt 0;
+    font-size: 9pt;
+  }
+  th {
+    text-align: left;
+    color: #12284C;
+    font-weight: 700;
+    border-bottom: 1.5px solid #12284C;
+    padding: 3pt 8pt 3pt 0;
+  }
+  td {
+    padding: 2pt 8pt 2pt 0;
+    border-bottom: 1px solid #EDF2F7;
+    vertical-align: top;
+  }
+  .status {
+    display: inline-block;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1pt 6pt;
+    border-radius: 9pt;
+    white-space: nowrap;
+  }
+  .status-done { background: #E6F4EA; color: #276749; }
+  .status-progress { background: #FFFBEB; color: #B45309; }
+  .status-planned { background: #EBF2FA; color: #12284C; }
+  strong { color: #12284C; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 9.5pt;
+    background: #F4F7FB;
+    padding: 0 3pt;
+    border-radius: 3pt;
+  }
+  .footer-note {
+    margin-top: 5pt;
+    font-size: 8pt;
+    color: #607080;
+    font-style: italic;
+    line-height: 1.35;
+  }
+  .revisions { margin-top: 2pt; font-size: 8pt; color: #607080; }
+  .revisions strong { color: #12284C; font-style: normal; }
+</style>
+</head>
+<body>
+
+<h1>Magpie Mediations — Project Plan</h1>
+<div class="meta"><strong>Version 1.0</strong> &nbsp;·&nbsp; Last updated 2026-05-05</div>
+
+<hr>
+
+<h2>What We're Building</h2>
+<p>A web platform that connects parties in civil litigation with vetted, currently-practicing mediators. Counsel can browse a verified roster, choose a mediator, book a half-day or full-day session (online or in-person), execute the required agreements electronically, and pay a flat rate — all in a single online flow. <strong>Our differentiator: every mediator on the roster is an actively-practicing civil litigator, not a retired judge or career mediator.</strong></p>
+
+<h2>How We're Building It</h2>
+<ul>
+  <li><strong>Modern, scalable web technology</strong> so the platform can grow without re-architecting.</li>
+  <li><strong>Established third-party providers</strong> handle the sensitive functions: <strong>Stripe</strong> (payments), <strong>Dropbox Sign</strong> (e-signatures), <strong>Zoom</strong> (video conferencing), <strong>Clerk</strong> (accounts &amp; login), <strong>Resend</strong> (email).</li>
+  <li><strong>Hosted on AWS</strong> for enterprise-grade security and availability.</li>
+  <li><strong>Guided by a written "constitution" of non-negotiable principles</strong>, including: confidentiality by default, "platform — not a law firm" positioning, mediator verification before any booking, audit trails on every transaction, and disciplined scope (no feature creep on the MVP).</li>
+</ul>
+
+<h2>Progress</h2>
+<table>
+  <thead>
+    <tr><th style="width:90pt;">Status</th><th>Milestone</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="status status-done">Done</span></td><td>Product concept and design mockup finalized</td></tr>
+    <tr><td><span class="status status-done">Done</span></td><td>Project framework and quality standards established (constitution v1.2.0)</td></tr>
+    <tr><td><span class="status status-done">Done</span></td><td>Technology stack selected and locked in</td></tr>
+    <tr><td><span class="status status-progress">In progress</span></td><td>First feature build: mediator roster (browse and filter)</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>Booking flow (case info, mediator selection, session type, scheduling)</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>E-signature flow for mediation agreement and confidentiality provisions</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>Payment processing and confirmation</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>User dashboards (counsel + mediator views)</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>Mediator application and verification workflow</td></tr>
+    <tr><td><span class="status status-planned">Planned</span></td><td>Marketing pages, pricing page, public launch</td></tr>
+  </tbody>
+</table>
+
+<h2>What's Next (Near Term)</h2>
+<p>Build and demonstrate the mediator roster page — counsel can search by practice area, state, and availability. After that: the end-to-end booking and payment flow, then the e-signature and dashboard work.</p>
+
+<h2>Open Items / Decisions for the Partners</h2>
+<ul>
+  <li><strong>Pricing</strong> — current placeholders are $1,500 (half-day) and $2,500 (full-day) for parties; $1,200 / $2,000 mediator payouts. Final pricing to be set before launch.</li>
+  <li><strong>AWS account</strong> — MVP will deploy in Morgan's personal AWS account; production will migrate to a dedicated Magpie Mediations AWS account once it is provisioned. Migration plan is documented and scoped.</li>
+  <li><strong>Founding mediator outreach</strong> — not started; will rely on the partners' professional network for the first cohort.</li>
+  <li><strong>Domain registration</strong> — to be confirmed (<code>magpie-mediations.com</code> or alternative).</li>
+  <li><strong>Entity formalities</strong> — confirm Magpie Mediations LLC formation, EIN, business bank account, and Stripe onboarding documentation are in hand before payment processing goes live.</li>
+</ul>
+
+<hr>
+
+<p class="footer-note">Magpie Mediations LLC is a technology platform, not a law firm, and does not provide legal advice. Rates and features described are subject to change prior to launch.</p>
+
+<div class="revisions"><strong>Revision history</strong> &nbsp;·&nbsp; v1.0 — 2026-05-05 — Initial plan: scope, stack, milestone status.</div>
+
+</body>
+</html>
