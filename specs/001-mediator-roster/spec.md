@@ -81,18 +81,28 @@ A visitor decides on a mediator from the roster and proceeds toward booking that
 - **A visitor on a slow or intermittent connection**: the page MUST remain usable as data arrives; filter and search interactions MUST give clear feedback rather than appearing frozen.
 - **A visitor shares a filtered roster URL**: the recipient MUST land on the same filtered view (filter and search state is part of the URL).
 
+## Clarifications
+
+### Session 2026-05-06
+
+- Q: What is the MVP set of attributes shown on each mediator card? → A: Mockup-aligned (5 attrs) — name, firm, location (city + state), primary practice areas, years of practice; initials-based avatar (no photo).
+- Q: How is the set of practice areas defined — curated, free text, or hybrid? → A: Curated controlled vocabulary maintained by Magpie admins. Initial list: Personal Injury, Commercial Litigation, Employment, Real Estate, Insurance Defense, Intellectual Property, Construction. Mediators pick from this list only.
+- Q: What states are available in the state filter? → A: All 50 U.S. states plus the District of Columbia. States without active mediators still appear in the dropdown and return the standard "no mediators match" empty state when selected.
+- Q: Is the practice area filter single-select or multi-select? → A: Single-select for MVP. The underlying data model and URL design MUST remain compatible with a future multi-select extension (Phase 2 candidate); no schema or query rewrite should be required when multi-select is introduced.
+- Q: Default page size for the paginated roster? → A: 12 mediator cards per page (clean 3×4 desktop grid; degrades to 2-column tablet and 1-column mobile).
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: System MUST display only mediators whose verification status is "active" on the public roster page.
 - **FR-002**: System MUST exclude mediators in any non-"active" verification state (e.g., pending, suspended, withdrawn) from the public roster.
-- **FR-003**: System MUST paginate the roster so that the page loads quickly regardless of total roster size.
-- **FR-004**: Each mediator card MUST display profile information sufficient for counsel to evaluate the mediator at a glance. The initial expected attribute set is name, firm, location, primary practice areas, and years of practice; this set is **tentative** and may be expanded, reduced, or restructured during clarification or based on partner input.
+- **FR-003**: System MUST paginate the roster so that the page loads quickly regardless of total roster size. Default page size is **12 mediator cards per page**.
+- **FR-004**: Each mediator card MUST display the following attributes: (a) mediator name, (b) firm or practice affiliation, (c) location as city and U.S. state, (d) primary practice areas, and (e) years of civil litigation practice. The card MUST also display an initials-based avatar (no photo). Expansion of this attribute set (e.g., photos, bios, bar admissions) is a Phase 2 enhancement requiring spec amendment.
 - **FR-005**: When no other ordering is requested, the roster MUST be sorted alphabetically by mediator surname, ascending (A → Z).
 - **FR-006**: Pagination MUST present numbered page controls that allow direct navigation to any page (e.g., "1 2 3 … Next").
-- **FR-007**: Users MUST be able to filter the roster by primary practice area.
-- **FR-008**: Users MUST be able to filter the roster by U.S. state.
+- **FR-007**: Users MUST be able to filter the roster by primary practice area. The MVP filter is **single-select** (one practice area at a time). The underlying mediator↔practice-area relationship MUST remain many-to-many so that a future multi-select filter (Phase 2 candidate) can be introduced without a schema rewrite.
+- **FR-008**: Users MUST be able to filter the roster by U.S. state. The filter MUST present all 50 U.S. states plus the District of Columbia. States with no active mediators MUST still appear in the dropdown; selecting such a state MUST display the standard "no mediators match" empty state.
 - **FR-009**: Users MUST be able to search the roster by mediator name or firm name.
 - **FR-010**: Filters and search MUST combine cumulatively: applying multiple filters and a search query narrows results to entries that satisfy all conditions.
 - **FR-011**: Users MUST be able to clear all active filters and the search query in a single action.
@@ -102,11 +112,12 @@ A visitor decides on a mediator from the roster and proceeds toward booking that
 - **FR-015**: The roster MUST be accessible without authentication. Sign-in MUST NOT be required to browse, search, or filter.
 - **FR-016**: Filter state, search query, sort order, and current page MUST be reflected in the page URL so that users can share, bookmark, and use browser back/forward without losing their place.
 - **FR-017**: When a mediator's verification status changes to a non-active state, that mediator MUST stop appearing in subsequent roster responses, and any direct attempt to access that mediator's booking entry point MUST present a clear unavailable-mediator message.
+- **FR-018**: The practice area values used for display and filtering MUST come from a Magpie-curated controlled vocabulary. The MVP launches with this initial set: Personal Injury, Commercial Litigation, Employment, Real Estate, Insurance Defense, Intellectual Property, Construction. The set may be expanded over time by Magpie administrators; mediators select their primary practice areas from this canonical list rather than entering free text.
 
 ### Key Entities
 
-- **Mediator profile**: represents an attorney who has been verified and accepted onto the Magpie roster. Each profile has a verification status that gates whether the profile appears on the public roster, and a set of profile attributes used for display, filtering, and search. The exact attribute set is tentative for this feature and will be finalized in collaboration with the partners.
-- **Practice area**: a category of legal practice (such as Personal Injury, Commercial Litigation, Employment, Real Estate, Insurance Defense, Intellectual Property, Construction). A mediator may be associated with one or more practice areas; the practice area filter operates on this association.
+- **Mediator profile**: represents an attorney who has been verified and accepted onto the Magpie roster. Each profile has a verification status that gates whether the profile appears on the public roster, and the attribute set defined in FR-004 (name, firm, location, primary practice areas, years of practice). Initials avatars are derived from the name, not stored separately.
+- **Practice area**: a category of legal practice maintained by Magpie as a curated controlled vocabulary (see FR-018). A mediator may be associated with one or more practice areas; the practice area filter operates on this association. The administrative tools used to manage the canonical list are out of scope for this feature.
 
 ## Success Criteria *(mandatory)*
 
@@ -122,7 +133,7 @@ A visitor decides on a mediator from the roster and proceeds toward booking that
 
 ## Assumptions
 
-- The exact set of attributes shown on each mediator card is **tentative** and will be refined during clarification or by partner input on what attorneys actually rely on when choosing a mediator. The functional requirements deliberately avoid pinning the schema.
+- The mediator card attribute set was finalized during clarification on 2026-05-06 (see Clarifications and FR-004). Expansion to include photos, bios, or bar admission states is a Phase 2 enhancement.
 - Mediator availability/calendar features (showing next-available dates on the card, filtering by availability window, real-time calendar integration) are explicitly **deferred to Phase 2**. The MVP roster does not surface or filter on availability.
 - The roster page is browsable on common modern desktop and mobile browsers. Native mobile applications are out of scope.
 - The constitution's existing scope rules apply: U.S. jurisdictions only; only "active" verified mediators are listed; the platform is not a law firm; "platform-not-a-law-firm" disclaimers are present per global-page conventions.

@@ -37,4 +37,5 @@
   - **Pagination style**: numbered page controls (FR-006).
 - Scope change captured during initial clarification on 2026-05-06:
   - **Mediator availability/calendar features deferred to Phase 2**. Removed: availability-window filter; "next-available dates" attribute on cards; "Availability window" key entity. Captured in Assumptions.
-- Mediator profile attribute set is intentionally left tentative per partner direction — this is *not* an open clarification but a deliberate flexibility carried into `/speckit-clarify`.
+- Mediator profile attribute set was finalized during `/speckit-clarify` on 2026-05-06 (see spec § Clarifications and FR-004).
+- Additional clarifications resolved on 2026-05-06: practice area vocabulary (curated, FR-018), state filter scope (50 + D.C., FR-008), single-select practice area filter for MVP with multi-select-ready data model (FR-007), default page size of 12 (FR-003).
