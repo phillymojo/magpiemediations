@@ -46,7 +46,7 @@ redacted); filter + search state fully in URL; 12 cards/page; WCAG 2.1 AA
 | Scalability — Connection pooling | ✅ Pass | Prisma MUST use Neon's pooled connection string (`?pgbouncer=true`) for all serverless function paths. |
 | Scalability — Pagination | ✅ Pass | Offset pagination (`skip`/`take`) at 12/page; stable for alphabetical sort at MVP scale. |
 | Scalability — Indexed queries | ✅ Pass (via schema) | Prisma schema defines `@@index([verificationStatus])`, `@@index([state])`, `@@index([lastName, firstName])`, and `@@index([practiceAreaId])` on join table. |
-| Scalability — Rate limiting | ✅ Pass (via middleware) | Next.js middleware applies rate limiting to public unauthenticated routes (per Scalability Practices). |
+| Scalability — Rate limiting | ✅ Pass (via middleware) | In-memory sliding-window rate limiter in Next.js middleware for MVP. Graduation path: swap to Upstash Redis (`@upstash/ratelimit`) when production traffic warrants — single-file change. |
 | Multi-Account Portability | ✅ Pass | No new AWS resources introduced (no S3, KMS, IAM, or ACM). |
 
 **No violations requiring Complexity Tracking.**

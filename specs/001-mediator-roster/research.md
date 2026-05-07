@@ -114,16 +114,17 @@ Resolves the Outstanding item flagged during `/speckit-clarify`.
 
 ### 8. Rate Limiting Approach
 
-**Decision**: Next.js middleware (`middleware.js`) with an in-memory or
-edge-compatible rate limiter (e.g., `@upstash/ratelimit` backed by Upstash
-Redis, or a simple sliding window using Vercel/Amplify edge headers).
+**Decision**: Next.js middleware (`middleware.js`) with a simple **in-memory
+sliding-window rate limiter** for MVP. No external dependency required.
 **Rationale**: Roster page is unauthenticated and public — a scraper or bot
 could hammer the page and exhaust Neon connection slots. Rate limiting at the
-middleware layer stops this before it hits the database.
-**Note**: Upstash Redis is a small additional managed dependency — consistent
-with Principle V (buy, don't build). Alternatively, a simple in-memory rate
-limiter works for MVP if a Redis dependency feels premature. This decision can
-be deferred to the task implementation step.
+middleware layer stops this before it hits the database. In-memory is sufficient
+for MVP traffic: it resets on Lambda cold starts, but cold starts are infrequent
+and the risk window is small.
+**Graduation path**: When the platform reaches production traffic, replace the
+in-memory limiter with `@upstash/ratelimit` backed by Upstash Redis. This is a
+single-file swap in `middleware.js` — no other code changes required. Upstash
+is consistent with Principle V (buy, don't build) and survives Lambda restarts.
 
 ---
 
