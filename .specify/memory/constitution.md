@@ -1,11 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.1.0 → 1.2.0
-Bump rationale: MINOR — added "Multi-Account Portability" subsection under
-Additional Constraints. MVP will launch in a personal AWS account and later
-migrate to a dedicated account; portability rules prevent painting into a
-corner. No principles added or changed.
+Version change: 1.2.0 → 1.2.1
+Bump rationale: PATCH — clarified actual shipped versions in the Technology
+Stack table (Next.js 16 / React 19 / Tailwind CSS v4). Confirmed during T001
+scaffold on 2026-05-07. No principles, governance, or architecture changed.
+
+Prior version history (pre-1.2.1):
+  - 1.2.0 (2026-05-05): added Multi-Account Portability subsection.
 
 Principles: unchanged (I–VII).
 
@@ -141,7 +143,7 @@ transaction before expanding.
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js (App Router; React Server Components + Server Actions) |
+| Framework | Next.js 16 / React 19 (App Router; React Server Components + Server Actions) |
 | Language | JavaScript |
 | Hosting | AWS Amplify Hosting |
 | Database | Postgres on Neon (serverless) |
@@ -152,7 +154,7 @@ transaction before expanding.
 | Video conferencing | Zoom (per-session meetings via Zoom API) |
 | File storage | Amazon S3 with SSE-KMS |
 | Transactional email | Resend (with React Email templates) |
-| Styling / UI | Tailwind CSS + shadcn/ui |
+| Styling / UI | Tailwind CSS v4 + shadcn/ui |
 | Forms / validation | React Hook Form + Zod |
 | Background jobs | Inngest |
 | Errors | Sentry (with PII scrubbing for Principle I) |
@@ -308,4 +310,4 @@ All pull requests touching code MUST be checked against the relevant
 principles. Complexity that violates a principle MUST be justified in writing
 in the feature plan's Complexity Tracking section, or the change is rejected.
 
-**Version**: 1.2.0 | **Ratified**: 2026-05-05 | **Last Amended**: 2026-05-05
+**Version**: 1.2.1 | **Ratified**: 2026-05-05 | **Last Amended**: 2026-05-07

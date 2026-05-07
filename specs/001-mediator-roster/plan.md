@@ -15,8 +15,8 @@ practice, and an initials-based avatar. No authentication required to browse.
 ## Technical Context
 
 **Language/Version**: JavaScript / Node.js 20+ (via AWS Amplify Lambda)
-**Primary Dependencies**: Next.js 15 (App Router, RSC + Client Components),
-Prisma, Tailwind CSS, shadcn/ui, Zod
+**Primary Dependencies**: Next.js 16 / React 19 (App Router, RSC + Client Components),
+Prisma, Tailwind CSS v4, shadcn/ui, Zod
 **Storage**: Postgres on Neon (serverless); Prisma using pooled connection string
 for Lambda/serverless function compatibility
 **Testing**: Jest + React Testing Library (pragmatic — roster browse is not a
