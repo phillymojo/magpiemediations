@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
@@ -10,4 +5,53 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum VerificationStatus {
+  PENDING    // Application received; under review
+  ACTIVE     // Verified — visible on the public roster
+  SUSPENDED  // Temporarily removed (e.g., bar issue under investigation)
+  WITHDRAWN  // Voluntarily left the platform
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model Mediator {
+  id                 String               @id @default(uuid())
+  firstName          String
+  lastName           String
+  firm               String               // Law firm name, or "Solo Practice"
+  city               String
+  state              String               // ISO 3166-2 US state code: "CA", "TX", etc.
+  yearsOfPractice    Int
+  verificationStatus VerificationStatus   @default(PENDING)
+  practiceAreas      MediatorPracticeArea[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@index([verificationStatus])           // roster query always filters on this
+  @@index([state])                        // state filter
+  @@index([lastName, firstName])          // default alphabetical sort
+}
+
+model PracticeArea {
+  id        String               @id @default(uuid())
+  name      String               @unique   // Display name: "Personal Injury"
+  slug      String               @unique   // URL/filter value: "personal-injury"
+  mediators MediatorPracticeArea[]
+}
+
+// Join table: many-to-many between Mediator and PracticeArea.
+// Many-to-many is required by spec (a mediator may have multiple practice
+// areas) and keeps the data model multi-select-ready per FR-007.
+model MediatorPracticeArea {
+  mediatorId     String
+  practiceAreaId String
+  mediator       Mediator     @relation(fields: [mediatorId], references: [id], onDelete: Cascade)
+  practiceArea   PracticeArea @relation(fields: [practiceAreaId], references: [id])
+
+  @@id([mediatorId, practiceAreaId])
+  @@index([practiceAreaId])               // efficient filter: "mediators in area X"
 }
