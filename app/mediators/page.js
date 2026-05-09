@@ -2,6 +2,7 @@ import { getMediators }     from '@/lib/db/mediators'
 import { getPracticeAreas } from '@/lib/db/practiceAreas'
 import { MediatorGrid }     from '@/components/mediators/MediatorGrid'
 import { RosterPagination } from '@/components/mediators/RosterPagination'
+import { RosterFilters }    from '@/components/mediators/RosterFilters'
 
 export const metadata = {
   title:       'Find a Mediator — Magpie Mediations',
@@ -23,9 +24,6 @@ export default async function MediatorsPage({ searchParams }) {
     getPracticeAreas(),
   ])
 
-  // practiceAreas is fetched here so it's available for RosterFilters in US2.
-  // It's unused in this phase but avoids adding a second db call later.
-  void practiceAreas
 
   const hasActiveFilters = Boolean(practiceAreaSlug || stateCode || search)
 
@@ -54,7 +52,11 @@ export default async function MediatorsPage({ searchParams }) {
       {/* Main content */}
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 
-        {/* Filter / search controls — added in US2 (RosterFilters + RosterSearch) */}
+        <RosterFilters
+          practiceAreas={practiceAreas}
+          currentPractice={practiceAreaSlug}
+          currentState={stateCode}
+        />
 
         {/* Results count */}
         {totalCount > 0 && (
