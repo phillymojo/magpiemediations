@@ -3,6 +3,7 @@ import { getPracticeAreas } from '@/lib/db/practiceAreas'
 import { MediatorGrid }     from '@/components/mediators/MediatorGrid'
 import { RosterPagination } from '@/components/mediators/RosterPagination'
 import { RosterFilters }    from '@/components/mediators/RosterFilters'
+import { RosterSearch }    from '@/components/mediators/RosterSearch'
 
 export const metadata = {
   title:       'Find a Mediator — Magpie Mediations',
@@ -52,11 +53,14 @@ export default async function MediatorsPage({ searchParams }) {
       {/* Main content */}
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 
-        <RosterFilters
-          practiceAreas={practiceAreas}
-          currentPractice={practiceAreaSlug}
-          currentState={stateCode}
-        />
+        <div className="flex flex-wrap items-end gap-3 mb-2">
+          <RosterFilters
+            practiceAreas={practiceAreas}
+            currentPractice={practiceAreaSlug}
+            currentState={stateCode}
+          />
+          <RosterSearch currentSearch={search} />
+        </div>
 
         {/* Results count */}
         {totalCount > 0 && (
