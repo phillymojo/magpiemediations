@@ -1,6 +1,16 @@
 import { PrismaClient, VerificationStatus } from '@prisma/client'
+import { randomBytes } from 'node:crypto'
 
 const prisma = new PrismaClient()
+
+// Generates a URL-safe slug: "sarah-mitchell-a1b2"
+// The 4-char hex suffix makes slugs unique without collision-handling logic.
+// Slugs are set at mediator creation and never regenerated.
+function generateSlug(firstName: string, lastName: string): string {
+  const base   = `${firstName}-${lastName}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const suffix = randomBytes(2).toString('hex')  // e.g. "a1b2"
+  return `${base}-${suffix}`
+}
 
 // ─── Practice Areas ───────────────────────────────────────────────────────────
 // Canonical list per FR-018.
@@ -58,6 +68,7 @@ async function main() {
       data: {
         firstName:          m.firstName,
         lastName:           m.lastName,
+        slug:               generateSlug(m.firstName, m.lastName),
         firm:               m.firm,
         city:               m.city,
         state:              m.state,

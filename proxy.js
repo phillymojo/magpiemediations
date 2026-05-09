@@ -23,7 +23,7 @@ function isRateLimited(ip) {
   return false
 }
 
-export function middleware(request) {
+export function proxy(request) {
   // x-forwarded-for is set by the load balancer / CDN in production.
   // Falls back to a placeholder in local dev where the header is absent.
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'local'

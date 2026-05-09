@@ -13,14 +13,14 @@ import { Card, CardContent } from '@/components/ui/card'
  * }}} props
  */
 export function MediatorCard({ mediator }) {
-  const { id, firstName, lastName, firm, city, state, yearsOfPractice, practiceAreas } = mediator
+  const { slug, firstName, lastName, firm, city, state, yearsOfPractice, practiceAreas } = mediator
   const initials  = `${firstName[0]}${lastName[0]}`.toUpperCase()
   const fullName  = `${firstName} ${lastName}`
   const location  = `${city}, ${state}`
 
   return (
     <Link
-      href={`/mediators/${id}`}
+      href={`/mediators/${slug}`}
       aria-label={`View profile and book a session with ${fullName}`}
       className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-lg"
     >

@@ -27,6 +27,7 @@ model Mediator {
   city               String
   state              String               // ISO 3166-2 US state code: "CA", "TX", etc.
   yearsOfPractice    Int
+  slug               String               @unique
   verificationStatus VerificationStatus   @default(PENDING)
   practiceAreas      MediatorPracticeArea[]
   createdAt          DateTime             @default(now())

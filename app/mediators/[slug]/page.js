@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { getMediatorById } from '@/lib/db/mediators'
+import { getMediatorBySlug } from '@/lib/db/mediators'
 import { Badge }           from '@/components/ui/badge'
 
 export async function generateMetadata({ params }) {
-  const { id } = await params
-  const mediator = await getMediatorById(id)
+  const { slug } = await params
+  const mediator = await getMediatorBySlug(slug)
   if (!mediator) return { title: 'Mediator Unavailable — Magpie Mediations' }
   return {
     title:       `Book a Session with ${mediator.firstName} ${mediator.lastName} — Magpie Mediations`,
@@ -13,8 +13,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function MediatorDetailPage({ params }) {
-  const { id } = await params
-  const mediator = await getMediatorById(id)
+  const { slug } = await params
+  const mediator = await getMediatorBySlug(slug)
 
   // Mediator not found OR not ACTIVE — render unavailable message.
   // Not differentiated: avoids leaking whether a mediator ever existed.
