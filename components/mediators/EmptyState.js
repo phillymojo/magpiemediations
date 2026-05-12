@@ -9,7 +9,7 @@
 export function EmptyState({ variant = 'no-results' }) {
   if (variant === 'empty-roster') {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="flex flex-col items-center justify-center py-24 text-center" role="status">
         <p className="text-lg font-semibold text-slate-800">No mediators yet</p>
         <p className="mt-2 text-sm text-slate-500 max-w-sm">
           Our mediator roster is being built. Check back soon.
