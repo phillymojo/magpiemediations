@@ -2,6 +2,20 @@
 
 **Branch**: `003-user-auth` | **Date**: 2026-05-20
 
+## Clerk API Version Note
+
+The Clerk quickstart prompt from the dashboard (May 2026) confirms several API details that supersede earlier research. These are locked in below.
+
+**NEVER use** (deprecated):
+- `<SignedIn>` / `<SignedOut>` → replaced by `<Show when="signed-in">` / `<Show when="signed-out">`
+- `authMiddleware()` → replaced by `clerkMiddleware()`
+
+**ALWAYS use**:
+- `clerkMiddleware()` from `@clerk/nextjs/server`
+- `<Show>`, `<UserButton>`, `<SignInButton>`, `<SignUpButton>` from `@clerk/nextjs`
+- `auth()` from `@clerk/nextjs/server` (async/await pattern)
+- `<ClerkProvider>` inside `<body>` (not wrapping `<html>`)
+
 ## Decision 1 — Clerk Package
 
 **Decision**: `@clerk/nextjs` (single package, covers middleware + React components + server utilities)
@@ -26,19 +40,46 @@ proxy.js exports clerkMiddleware(async (auth, request) => {
 })
 ```
 
+**Middleware matcher** (confirmed from Clerk dashboard prompt — must include `/__clerk/` path):
+```js
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/__clerk/(.*)',
+    '/(api|trpc)(.*)',
+  ],
+}
+```
+
 **Alternatives considered**: Chaining via `NextResponse` wrapping — more fragile; rejected in favor of Clerk's built-in callback pattern.
 
 ---
 
 ## Decision 3 — Auth UI Components
 
-**Decision**: Clerk's `<SignIn />` and `<SignUp />` embedded components mounted on Next.js catch-all routes.
+**Decision**: Clerk's `<SignIn />` and `<SignUp />` embedded components mounted on Next.js catch-all routes. Navigation state handled by `<Show>`, `<UserButton>`, `<SignInButton>`, `<SignUpButton>`.
 
 **Route convention**:
 - `/sign-in/[[...sign-in]]/page.js` → `<SignIn />`
 - `/sign-up/[[...sign-up]]/page.js` → `<SignUp />`
 
-**Rationale**: Catch-all routes allow Clerk to handle sub-flows (email verification, password reset, OAuth callbacks) without additional route configuration. Embedded components keep users on our domain rather than redirecting to Clerk-hosted pages.
+**Nav component pattern** (confirmed from Clerk dashboard prompt):
+```jsx
+import { Show, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs'
+
+// Signed-out state:
+<Show when="signed-out">
+  <SignInButton />
+  <SignUpButton />
+</Show>
+
+// Signed-in state:
+<Show when="signed-in">
+  <UserButton />   // avatar + dropdown with sign-out
+</Show>
+```
+
+**Rationale**: Catch-all routes allow Clerk to handle sub-flows (email verification, password reset, OAuth callbacks) without additional route configuration. Embedded components keep users on our domain. `<UserButton>` provides sign-out via its built-in dropdown — no custom sign-out button needed.
 
 **Alternatives considered**: Clerk-hosted pages (redirect to accounts.clerk.dev) — rejected; breaks UX continuity and is harder to style to match the platform.
 
