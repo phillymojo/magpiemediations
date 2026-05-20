@@ -1,4 +1,5 @@
 import { Geist } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
@@ -17,9 +18,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        <ClerkProvider>
+          <Navbar />
+          <div className="flex-1">{children}</div>
+          <Footer />
+        </ClerkProvider>
       </body>
     </html>
   );
