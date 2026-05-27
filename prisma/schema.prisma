@@ -19,6 +19,20 @@ enum VerificationStatus {
 
 // ─── Models ───────────────────────────────────────────────────────────────────
 
+// Platform user — synced from Clerk via webhook on user.created/updated/deleted.
+// id is Clerk's user ID ("user_xxxxxxxxxxxx") — no separate UUID needed.
+// Hard delete for MVP; must change to soft delete before bookings feature ships.
+model User {
+  id        String   @id
+  email     String   @unique
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
 model Mediator {
   id                 String               @id @default(uuid())
   firstName          String

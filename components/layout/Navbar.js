@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Show, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs'
 
 export function Navbar() {
   return (
@@ -26,13 +27,24 @@ export function Navbar() {
         <li><span className="text-[#A8C0D8]/40 text-sm font-medium cursor-not-allowed">Join as Mediator</span></li>
       </ul>
 
-      {/* CTA */}
-      <Link
-        href="/mediators"
-        className="bg-[#2B7AB8] text-white text-sm font-semibold px-5 py-2 rounded-md hover:opacity-90 transition-opacity"
-      >
-        Schedule Now
-      </Link>
+      {/* Auth controls */}
+      <div className="flex items-center gap-3">
+        <Show when="signed-out">
+          <SignInButton mode="redirect">
+            <button className="text-[#A8C0D8] text-sm font-medium hover:text-white transition-colors">
+              Sign In
+            </button>
+          </SignInButton>
+          <SignUpButton mode="redirect">
+            <button className="bg-[#2B7AB8] text-white text-sm font-semibold px-5 py-2 rounded-md hover:opacity-90 transition-opacity">
+              Schedule Now
+            </button>
+          </SignUpButton>
+        </Show>
+        <Show when="signed-in">
+          <UserButton afterSignOutUrl="/" />
+        </Show>
+      </div>
 
     </nav>
   )
