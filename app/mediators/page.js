@@ -57,7 +57,7 @@ export default async function MediatorsPage({ searchParams }) {
         {/* Suspense required: RosterFilters + RosterSearch use useSearchParams(),
             which must be inside a Suspense boundary in Next.js 15+ */}
         <Suspense fallback={<div className="h-16 mb-2" />}>
-          <div className="flex flex-wrap items-end gap-3 mb-2">
+          <div className="flex flex-wrap items-start gap-3 mb-2">
             <RosterFilters
               practiceAreas={practiceAreas}
               currentPractice={practiceAreaSlug}
