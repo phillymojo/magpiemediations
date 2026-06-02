@@ -93,7 +93,7 @@ export default async function MediatorDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Booking CTA — placeholder; replaced by booking feature */}
+        {/* Booking CTA */}
         <div className="bg-white rounded-lg border border-slate-200 p-6">
           <h2 className="text-base font-semibold text-slate-900 mb-1">
             Ready to schedule?
@@ -101,13 +101,12 @@ export default async function MediatorDetailPage({ params }) {
           <p className="text-sm text-slate-500 mb-4">
             Half-day and full-day sessions available online or in person.
           </p>
-          {/* TODO: replace with booking flow once that feature is implemented */}
-          <button
-            disabled
-            className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white opacity-50 cursor-not-allowed"
+          <Link
+            href={`/mediators/${slug}/book`}
+            className="inline-block rounded-md bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 transition-colors"
           >
-            Book a Session with {firstName} — Coming Soon
-          </button>
+            Book a Session with {firstName}
+          </Link>
         </div>
 
       </main>

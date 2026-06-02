@@ -17,9 +17,11 @@ function isRateLimited(ip) {
   return false
 }
 
-// Routes that require authentication. The booking routes don't exist yet but
-// the protection pattern is established here so they're secured on creation.
-const isProtected = createRouteMatcher(['/booking', '/booking/(.*)'])
+const isProtected = createRouteMatcher([
+  '/booking', '/booking/(.*)',
+  '/bookings', '/bookings/(.*)',
+  '/mediators/(.*)/book',
+])
 
 export default clerkMiddleware(async (auth, request) => {
   // Protect booking routes — redirect unauthenticated users to /sign-in

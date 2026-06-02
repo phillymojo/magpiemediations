@@ -42,6 +42,9 @@ export function Navbar() {
           </SignUpButton>
         </Show>
         <Show when="signed-in">
+          <Link href="/bookings" className="text-[#A8C0D8] text-sm font-medium hover:text-white transition-colors">
+            My Bookings
+          </Link>
           <UserButton afterSignOutUrl="/" />
         </Show>
       </div>
