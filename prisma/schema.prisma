@@ -10,6 +10,17 @@ datasource db {
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
+enum BookingStatus {
+  PENDING_CONFIRMATION
+  CONFIRMED
+  CANCELLED
+}
+
+enum SessionType {
+  HALF_DAY
+  FULL_DAY
+}
+
 enum VerificationStatus {
   PENDING    // Application received; under review
   ACTIVE     // Verified — visible on the public roster
@@ -21,14 +32,15 @@ enum VerificationStatus {
 
 // Platform user — synced from Clerk via webhook on user.created/updated/deleted.
 // id is Clerk's user ID ("user_xxxxxxxxxxxx") — no separate UUID needed.
-// Hard delete for MVP; must change to soft delete before bookings feature ships.
+// TODO: change hard delete to soft delete now that User has Booking relations.
 model User {
-  id        String   @id
-  email     String   @unique
+  id        String    @id
+  email     String    @unique
   firstName String
   lastName  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
 
   @@index([email])
 }
@@ -44,12 +56,47 @@ model Mediator {
   slug               String               @unique
   verificationStatus VerificationStatus   @default(PENDING)
   practiceAreas      MediatorPracticeArea[]
+  bookings           Booking[]
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 
   @@index([verificationStatus])           // roster query always filters on this
   @@index([state])                        // state filter
   @@index([lastName, firstName])          // default alphabetical sort
+}
+
+model Booking {
+  id              String        @id @default(uuid())
+  userId          String
+  mediatorId      String
+  sessionType     SessionType
+  preferredDate   DateTime      @db.Date
+  caseDescription String
+  status          BookingStatus @default(PENDING_CONFIRMATION)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user     User     @relation(fields: [userId],     references: [id])
+  mediator Mediator @relation(fields: [mediatorId], references: [id])
+
+  @@index([userId])
+  @@index([mediatorId])
+  @@index([status])
+}
+
+// Append-only audit log — application code MUST NOT UPDATE or DELETE entries.
+// Polymorphic: entityType + entityId reference any entity (Booking, Payment, etc.)
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  action     String
+  entityType String
+  entityId   String
+  newStatus  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityId])
+  @@index([actorId])
 }
 
 model PracticeArea {
