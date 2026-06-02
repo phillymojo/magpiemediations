@@ -12,6 +12,8 @@
 - Q: What confirmation model applies at MVP? → A: Booking is created with PENDING_CONFIRMATION status. Mediator must manually confirm. Both user and mediator receive email notifications on submission.
 - Q: Is the status machine designed for easy upgrade to auto-confirmation? → A: Yes. The PENDING_CONFIRMATION → auto-CONFIRMED path must be a small, isolated change when introduced.
 - Q: Who receives emails and on what events? → A: User receives email on booking submission. Mediator receives email on booking submission.
+- Q: What happens when a mediator has no User account (no email address available)? → A: Fall back to a configured admin email (e.g. ADMIN_EMAIL env var) when mediator has no User record. Does not block booking creation.
+- Q: Should emails be sent synchronously or via background job? → A: Synchronously in the Server Action for MVP. Migrate to Inngest if retry logic or timeouts become a concern.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -87,7 +89,7 @@ A signed-in user can navigate to `/bookings` and see a list of their booking req
 - **FR-007**: The submission button MUST be disabled immediately on click to prevent duplicate bookings.
 - **FR-008**: Every booking creation MUST write an AuditLog entry: actorId (user ID), timestamp (UTC), action ("booking.created"), entityType ("Booking"), entityId, newStatus.
 - **FR-009**: On booking creation, a confirmation email MUST be sent to the user: mediator name, session type, preferred date, pending-confirmation status note.
-- **FR-010**: On booking creation, a notification email MUST be sent to the mediator: session type, preferred date, prompt to follow up. Case description MUST NOT be included.
+- **FR-010**: On booking creation, a notification email MUST be sent to the mediator's email address if their User account exists; otherwise it MUST fall back to the configured admin email (ADMIN_EMAIL env var). Case description MUST NOT be included.
 - **FR-011**: Email failure MUST NOT prevent or roll back booking creation. Failures MUST be logged.
 - **FR-012**: Authenticated users MUST be able to view their bookings at `/bookings`.
 - **FR-013**: `/bookings` and `/bookings/[id]/confirmation` MUST require authentication.
