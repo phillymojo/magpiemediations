@@ -13,6 +13,7 @@
 - Q: How does a mediator claim their profile? → A: Auto-linked by email match. When a mediator signs up using the email on their Mediator record, the Clerk webhook links their User account to that Mediator record automatically.
 - Q: Does the mediator need to give a reason when declining? → A: No — one-click decline, no reason required.
 - Q: After a mediator accepts, is the booking immediately CONFIRMED? → A: Yes — immediately CONFIRMED, no additional steps for MVP.
+- Q: Can a mediator also book other mediators as a regular user? → A: Yes. A user who is a mediator can also act as a party/counsel and book other mediators. The portal is additive — a linked mediator has access to both `/bookings` (their bookings as a client) and `/portal` (their bookings as a mediator). The two roles are completely independent.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -96,6 +97,7 @@ A linked mediator views a pending booking request and clicks "Decline." The book
 - **FR-001**: The `Mediator` model MUST gain an `email` field (nullable, unique) for profile linking, and a `userId` field (nullable, unique) referencing the `User` table.
 - **FR-002**: When a new user is created (Clerk webhook `user.created`), the system MUST check if a `Mediator` record with a matching email exists. If so, the `Mediator.userId` MUST be set to the new user's ID. Email matching MUST be case-insensitive.
 - **FR-003**: The `/portal` route MUST require authentication AND the authenticated user must be a linked mediator. Non-mediator users MUST see an access-denied message.
+- **FR-012**: A user who is a linked mediator MUST retain full access to `/bookings` as a regular user. Being a mediator does not affect their ability to book other mediators.
 - **FR-004**: The mediator dashboard MUST display bookings assigned to the mediator grouped by status: Pending Confirmation, Confirmed, Cancelled.
 - **FR-005**: Each booking entry on the dashboard MUST show: session type, preferred date, and requesting party's first name. The case description MUST NOT be shown.
 - **FR-006**: A mediator MUST be able to accept a PENDING_CONFIRMATION booking. On acceptance: status becomes CONFIRMED, an AuditLog entry is written, a confirmation email is sent to the user.
