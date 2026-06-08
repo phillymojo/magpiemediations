@@ -41,6 +41,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   bookings  Booking[]
+  mediator  Mediator?
 
   @@index([email])
 }
@@ -54,9 +55,12 @@ model Mediator {
   state              String               // ISO 3166-2 US state code: "CA", "TX", etc.
   yearsOfPractice    Int
   slug               String               @unique
+  email              String?              @unique  // for auto-linking on sign-up; set by admin
+  userId             String?              @unique  // set when mediator claims their account
   verificationStatus VerificationStatus   @default(PENDING)
   practiceAreas      MediatorPracticeArea[]
   bookings           Booking[]
+  user               User?                @relation(fields: [userId], references: [id])
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 

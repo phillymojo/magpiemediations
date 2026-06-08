@@ -1,7 +1,9 @@
 import { Webhook }      from 'svix'
 import { headers }      from 'next/headers'
 import { NextResponse } from 'next/server'
+import { clerkClient }  from '@clerk/nextjs/server'
 import { upsertUser, deleteUser } from '@/lib/db/users'
+import { linkMediatorToUser }     from '@/lib/db/mediators'
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET
@@ -44,6 +46,17 @@ export async function POST(request) {
 
   switch (type) {
     case 'user.created':
+      await upsertUser({ id: data.id, email, firstName, lastName })
+      // Auto-link to an existing Mediator record by email match (case-insensitive).
+      // If linked, flag it in Clerk public metadata so the Navbar can show the
+      // "My Portal" link without a DB call on every request.
+      if (await linkMediatorToUser({ userId: data.id, email })) {
+        const clerk = await clerkClient()
+        await clerk.users.updateUser(data.id, {
+          publicMetadata: { isMediatorLinked: true },
+        })
+      }
+      break
     case 'user.updated':
       await upsertUser({ id: data.id, email, firstName, lastName })
       break

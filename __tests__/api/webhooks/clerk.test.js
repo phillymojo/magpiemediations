@@ -14,13 +14,25 @@ jest.mock('@/lib/db/users', () => ({
   deleteUser:  jest.fn().mockResolvedValue({}),
 }))
 
+jest.mock('@/lib/db/mediators', () => ({
+  linkMediatorToUser: jest.fn().mockResolvedValue(false),
+}))
+
+jest.mock('@clerk/nextjs/server', () => ({
+  clerkClient: jest.fn(),
+}))
+
 jest.mock('next/headers', () => ({
   headers: jest.fn(),
 }))
 
-const { Webhook }              = require('svix')
+const { Webhook }                = require('svix')
 const { upsertUser, deleteUser } = require('@/lib/db/users')
-const { headers }              = require('next/headers')
+const { linkMediatorToUser }     = require('@/lib/db/mediators')
+const { clerkClient }            = require('@clerk/nextjs/server')
+const { headers }                = require('next/headers')
+
+const updateUserMock = jest.fn().mockResolvedValue({})
 
 const SVIX_HEADERS = {
   'svix-id':        'msg_123',
@@ -42,6 +54,9 @@ function mockHeaders(overrides = {}) {
 beforeEach(() => {
   jest.clearAllMocks()
   process.env.CLERK_WEBHOOK_SECRET = 'whsec_test'
+  linkMediatorToUser.mockResolvedValue(false)
+  updateUserMock.mockResolvedValue({})
+  clerkClient.mockResolvedValue({ users: { updateUser: updateUserMock } })
 })
 
 describe('POST /api/webhooks/clerk', () => {
@@ -105,6 +120,44 @@ describe('POST /api/webhooks/clerk', () => {
       await POST(makeRequest(payload))
 
       expect(upsertUser).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('user.created — mediator auto-linking', () => {
+    const payload = {
+      type: 'user.created',
+      data: {
+        id: 'user_med',
+        email_addresses: [{ email_address: 'jane@lawfirm.com' }],
+        first_name: 'Jane',
+        last_name:  'Smith',
+      },
+    }
+
+    it('sets Clerk metadata when a matching mediator is linked', async () => {
+      mockHeaders()
+      linkMediatorToUser.mockResolvedValueOnce(true)
+      Webhook.mockImplementationOnce(() => ({ verify: jest.fn().mockReturnValue(payload) }))
+
+      const res = await POST(makeRequest(payload))
+
+      expect(res.status).toBe(200)
+      expect(linkMediatorToUser).toHaveBeenCalledWith({ userId: 'user_med', email: 'jane@lawfirm.com' })
+      expect(updateUserMock).toHaveBeenCalledWith('user_med', {
+        publicMetadata: { isMediatorLinked: true },
+      })
+    })
+
+    it('does not touch Clerk metadata when no matching mediator exists', async () => {
+      mockHeaders()
+      linkMediatorToUser.mockResolvedValueOnce(false)
+      Webhook.mockImplementationOnce(() => ({ verify: jest.fn().mockReturnValue(payload) }))
+
+      const res = await POST(makeRequest(payload))
+
+      expect(res.status).toBe(200)
+      expect(linkMediatorToUser).toHaveBeenCalled()
+      expect(updateUserMock).not.toHaveBeenCalled()
     })
   })
 

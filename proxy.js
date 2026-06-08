@@ -21,6 +21,7 @@ const isProtected = createRouteMatcher([
   '/booking', '/booking/(.*)',
   '/bookings', '/bookings/(.*)',
   '/mediators/(.*)/book',
+  '/portal', '/portal/(.*)',
 ])
 
 export default clerkMiddleware(async (auth, request) => {
